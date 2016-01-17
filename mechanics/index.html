@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dotting!</title>
+</head>
+<body>
+    <canvas id="canvas" width="1300" height="800"></canvas>
+    <script>
+
+// Each pixel represents 2 SI meters
+PIXEL_SI_METER_RATIO = 2;
+
+
+var circle = {
+    'x0': 0,
+    'y0': 650,
+    'x': 0,
+    'y': 650,
+    'radius': 2,
+    'velocity': 2,
+    'lastTime': 0,
+    'acceleration': 9.8,
+    'startVelocity': 0,
+    'fillStyle': '#EE0D0D',
+    'linearVelocity': 20, 
+};
+
+    
+    var animate = function(circle, context, startTime) {
+        var diffTimeInSec = ((new Date()).getTime() - startTime) / 1000;
+
+        var newXComponent = circle.startVelocity * diffTimeInSec;
+        // var newX = newXComponent + circle.acceleration * diffTimeInSec * diffTimeInSec / 2;
+        var newX = circle.x0 + diffTimeInSec * circle.linearVelocity;
+        var newY = circle.y0 + circle.acceleration / 2 * diffTimeInSec * diffTimeInSec / 2;
+        circle.x = newX;
+        circle.y = newY;
+        clearScreen(context);
+        drawCircle(context, circle);
+
+        requestAnimationFrame(function(){
+            animate(circle, context, startTime);
+        });
+    };
+
+    var drawCircle = function(context, circle){
+    // console.log("@");
+     context.strokeStyle = "#000";
+     context.fillStyle = circle.fillStyle;
+     context.beginPath();
+     context.arc(circle.x, circle.y, circle.radius, 0, Math.PI*2,true);
+     context.closePath();
+     context.stroke();
+     context.fill();      
+    };
+
+    var clearScreen = function(context){
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    };
+        window.onload = function(){
+            var drawingCanvas = document.getElementById('canvas');
+            var context = drawingCanvas.getContext('2d');
+
+              setTimeout(function() {
+                var startTime = (new Date()).getTime();
+                animate(circle, context, startTime);
+              }, 1000);
+
+        };  
+
+
+    </script>
+</body>
+</html>
